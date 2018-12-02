@@ -1,0 +1,66 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity;
+@model UserMangementModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <table border="1">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Location</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Date Created</th>
+                <th>Created By</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.Location</td>
+                    <td>@user.Email</td>
+                    <td>@user.Role</td>
+                    <td>@user.CreatedDate.ToString("dddd, dd MMMM yyyy  h:mm tt")</td>
+                    <td>@user.CreatedBy</td>
+                    <td>---</td>
+                    <td> <a href="#">Manage Account</a></td>
+                </tr>
+                <tr>
+                    <td> Users Created</td>
+                    <td colspan="8">
+                        Total = @user.TotalUsersCreated,
+                        Super Admin = @user.TotalSuperAdminCreated,
+                        Admin = @user.TotalAdminCreated,
+                        Clients = @user.TotalClientCreated
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="text-align:center;">
+                        <form asp-area="Identity" asp-page="/Account/UserManagement" method="post" id="direct-login">
+                            <input class="form-control" id="userName" name="userName" value="@user.Email" style="display:none;" />
+                            <button type="submit" class="btn btn-link navbar-btn navbar-link">Direct Sign-In</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="border:none;">
+                    <td colspan="9" style="text-align:center; border:none; height:20px;"> &nbsp; </td>
+                </tr>
+
+            }
+        </table>
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
