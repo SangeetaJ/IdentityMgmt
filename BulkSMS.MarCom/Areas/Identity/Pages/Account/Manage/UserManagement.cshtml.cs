@@ -80,86 +80,71 @@ namespace BulkSMS.MarCom.Areas.Identity.Pages.Account
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userEntities = _context.Users.Where(x => x.CreatedBy.Equals(user.Email)).ToList();
-
             Users = new List<ApplicationUserDto>();
 
             AddCreatedUsers(user.Email, Users);
-
-            //foreach (ApplicationUser u in userEntities)
-            //{
-            //    var UserDto = new ApplicationUserDto();
-
-            //    UserDto.FirstName = u.FirstName;
-            //    UserDto.LastName = u.LastName;
-            //    UserDto.Email = u.Email;
-            //    UserDto.CreatedBy = u.CreatedBy;
-            //    UserDto.Location = u.Location;
-            //    UserDto.CreatedDate = u.CreatedDate;
-            //    UserDto.Role = _userManager.GetRolesAsync(u).ToString();
-            //    Users.Add(UserDto);
-
-            //    CreatedUserCount(UserDto.Email, UserDto); // this will feed count of users created by this user
-            //}
 
             return Page();
         }
 
         public void AddCreatedUsers(string email, List<ApplicationUserDto> DtoUserList)
         {
-            var userEntities = _context.Users.Where(x => x.CreatedBy.Equals(email)).ToList();
+            var query = fetchUserOnCreatedBy(email);
 
-            foreach (ApplicationUser u in userEntities)
+            foreach (ApplicationUserDto u in query)
             {
-                var UserDto = new ApplicationUserDto();
+                var creatorQuery = fetchUserOnCreatedBy(u.Email);
 
-                UserDto.FirstName = u.FirstName;
-                UserDto.LastName = u.LastName;
-                UserDto.Email = u.Email;
-                UserDto.CreatedBy = u.CreatedBy;
-                UserDto.Location = u.Location;
-                UserDto.CreatedDate = u.CreatedDate;
-                UserDto.Role = _userManager.GetRolesAsync(u).ToString();
-                // UserDto.Role = (await _userManager.GetRolesAsync(u)).FirstOrDefault();
-                DtoUserList.Add(UserDto);
+                CreatedUserCount(u, creatorQuery); // this will feed count of users created by this user
 
-                CreatedUserCount(UserDto.Email, UserDto); // this will feed count of users created by this user
+                DtoUserList.Add(u);
 
-                AddCreatedUsers(UserDto.Email, DtoUserList); // call same function again to search further users created by this user
+                AddCreatedUsers(u.Email, DtoUserList); // call same function again to search further users created by this user
             }
 
         }
 
-        public void CreatedUserCount(string email, ApplicationUserDto userDto)
+        IQueryable<ApplicationUserDto> fetchUserOnCreatedBy(string email)
         {
-            //int total = 0;
-
             var query = from ro in _context.Roles
                         join uro in _context.UserRoles on ro.Id equals uro.RoleId
                         join u in _context.Users on uro.UserId equals u.Id
                         where u.CreatedBy.Equals(email)
-                        group ro.Name by ro.Name into f
-                        select new { RoleName = f.Key, Count = f.Count() };
+                        select new ApplicationUserDto
+                        {
+                            FirstName = u.FirstName,
+                            LastName = u.LastName,
+                            Email = u.Email,
+                            CreatedBy = u.CreatedBy,
+                            Location = u.Location,
+                            CreatedDate = u.CreatedDate,
+                            Role = ro.Name
+                        };
+
+            return query;
+        }
+
+        public void CreatedUserCount(ApplicationUserDto creator, IQueryable<ApplicationUserDto> userDtos)
+        {
+            //int total = 0;
+
+            var query = from u in userDtos
+                        where u.CreatedBy.Equals(creator.Email)
+                        select u;
 
             foreach (var i in query)
             {
-                if (i.RoleName.Equals("SuperAdmin"))
-                    userDto.TotalSuperAdminCreated = i.Count;
+                if (i.Role.Equals("SuperAdmin"))
+                    creator.TotalSuperAdminCreated += 1;
 
-                if (i.RoleName.Equals("Admin"))
-                    userDto.TotalAdminCreated = i.Count;
+                if (i.Role.Equals("Admin"))
+                    creator.TotalAdminCreated += 1;
 
-                if (i.RoleName.Equals("Client"))
-                    userDto.TotalClientCreated = i.Count;
+                if (i.Role.Equals("Client"))
+                    creator.TotalClientCreated += 1;
             }
 
-            userDto.TotalUsersCreated = userDto.TotalClientCreated + userDto.TotalAdminCreated + userDto.TotalSuperAdminCreated;
-            //userDto.TotalSuperAdminCreated = query.Count(x => x.RoleName.Equals("SuperAdmin"));
-            //userDto.TotalAdminCreated = query.Count(x => x.RoleName.Equals("Admin"));
-            //userDto.TotalClientCreated = query.Count(x => x.RoleName.Equals("Client"));
-            //total = _context.Users.Where(x => x.CreatedBy.Equals(user.Email)).Count();
-            //total = query.Count();
-            //return total;
+            creator.TotalUsersCreated = creator.TotalClientCreated + creator.TotalAdminCreated + creator.TotalSuperAdminCreated;
         }
     }
 }
