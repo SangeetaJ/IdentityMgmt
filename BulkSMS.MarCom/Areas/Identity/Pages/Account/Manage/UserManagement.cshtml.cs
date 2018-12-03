@@ -126,8 +126,6 @@ namespace BulkSMS.MarCom.Areas.Identity.Pages.Account
 
         public void CreatedUserCount(ApplicationUserDto creator, IQueryable<ApplicationUserDto> userDtos)
         {
-            //int total = 0;
-
             var query = from u in userDtos
                         where u.CreatedBy.Equals(creator.Email)
                         select u;
