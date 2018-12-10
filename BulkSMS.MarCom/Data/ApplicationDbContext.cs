@@ -22,7 +22,7 @@ namespace BulkSMS.MarCom.Data
         public DbSet<ProductPlan> ProductPlan { get; set; }
         public DbSet<UserWithProductsPlan> UserWithProductsPlan { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder builder) 
         {
             base.OnModelCreating(builder);
             builder.Entity<ApplicationUser>()
