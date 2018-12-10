@@ -14,6 +14,8 @@ namespace BulkSMS.MarCom.Areas.Identity.Pages.Account.Manage
 
         public static string UserManagement => "User Management";
 
+        public static string CreateCampaign => "Create Campaign";
+
         public static string ChangePassword => "ChangePassword";
 
         public static string DownloadPersonalData => "DownloadPersonalData";
@@ -31,6 +33,8 @@ namespace BulkSMS.MarCom.Areas.Identity.Pages.Account.Manage
         public static string RegisterNavClass(ViewContext viewContext) => PageNavClass(viewContext, Register);
 
         public static string UserManagementNavClass(ViewContext viewContext) => PageNavClass(viewContext, UserManagement);
+
+        public static string CreateCampaignNavClass(ViewContext viewContext) => PageNavClass(viewContext, CreateCampaign);
 
         public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
 
