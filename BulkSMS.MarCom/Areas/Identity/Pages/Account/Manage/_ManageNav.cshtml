@@ -13,6 +13,9 @@
 
         <li class="@ManageNavPages.UserManagementNavClass(ViewContext)"><a asp-page="./UserManagement">User Management</a></li>
     }
+    <li class="@ManageNavPages.CreateCampaignNavClass(ViewContext)"><a asp-page="./CreateCampaign">+ Create Campaign</a></li>
+
+
     <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a id="change-password" asp-page="./ChangePassword">Password</a></li>
     @if (hasExternalLogins)
     {
