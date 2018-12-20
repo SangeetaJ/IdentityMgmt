@@ -89,7 +89,7 @@ namespace BulkSMS.MarCom.Areas.Identity.Pages.Account
 
         public void AddCreatedUsers(string email, List<ApplicationUserDto> DtoUserList)
         {
-            var query = fetchUserOnCreatedBy(email);
+            var query = fetchUserOnCreatedBy(email); // make sure you do not enter createdby same as username otherwise this function will never endg
 
             foreach (ApplicationUserDto u in query)
             {
