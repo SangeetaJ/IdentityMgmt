@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace BulkSMS.MarCom.Data
 {
@@ -77,17 +78,22 @@ namespace BulkSMS.MarCom.Data
 
     public class Status
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string StatusType { get; set; }
-
+        public string Name { get; set; }
+        public string Alias { get; set; }
         public ICollection<ApplicationUser> AppUser { get; set; }
     }
 
     public class Product
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Alias { get; set; }
         public string Description { get; set; }
         public string CreatedBy { get; set; }
         public virtual ApplicationUser CreatedUser { get; set; }
@@ -99,8 +105,12 @@ namespace BulkSMS.MarCom.Data
     public class ProductPlan
     {
         public Product ProductId { get; set; }
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Alias { get; set; }
         public string Description { get; set; }
         public string CreatedBy { get; set; }
         public virtual ApplicationUser CreatedUser { get; set; }
@@ -109,6 +119,8 @@ namespace BulkSMS.MarCom.Data
 
     public class UserWithProductsPlan
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string GiverId { get; set; }
         public string TakerId { get; set; }
